@@ -1,0 +1,11 @@
+cabal-version: 2.2
+
+name: clear
+version: 0
+
+build-type: Simple
+
+test-suite equivalence
+  default-language: Haskell2010
+  main-is: Equivalence.hs
+  type: exitcode-stdio-1.0
