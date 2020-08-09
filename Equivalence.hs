@@ -2,7 +2,8 @@ import           RIO
 
 import           Data.Bifunctor (Bifunctor, bimap)
 import           Data.Generics.Text (gshow)
-import           DynFlags (defaultDynFlags)
+import           DynFlags (defaultDynFlags, xopt_set)
+import           GHC.LanguageExtensions (Extension (EmptyCase, LambdaCase))
 import           Language.Haskell.GhclibParserEx.Config (fakeLlvmConfig,
                                                          fakeSettings)
 import           Language.Haskell.GhclibParserEx.GHC.Parser (parseFile)
@@ -14,12 +15,15 @@ main :: IO ()
 main =
   do
     content <- readFileUtf8 file
-    pPrintString $ showParseResult $ parseFile file dynFlags $
-      Text.unpack content
+    pPrintString $
+      showParseResult $ parseFile file dynFlags $ Text.unpack content
   where
     file = "Equivalence.hs"
 
-    dynFlags = defaultDynFlags fakeSettings fakeLlvmConfig
+    dynFlags =
+      defaultDynFlags fakeSettings fakeLlvmConfig
+      & (`xopt_set` EmptyCase)
+      & (`xopt_set` LambdaCase)
 
     showParseResult = \case
       POk state result ->
